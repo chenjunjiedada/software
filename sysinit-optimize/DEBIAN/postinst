@@ -1,0 +1,11 @@
+#!/bin/sh
+
+sed -i ":begin; /(/,/)/ { /)/! {  { N; b begin }; }; s/^start on (.*)/start on (desktop-session-start)/; };" /etc/init/network-manager.conf
+sed -i ":begin; /(/,/)/ { /)/! {  { N; b begin }; }; s/^start on (.*)/start on (desktop-session-start)/; };" /etc/init/avahi-daemon.conf
+sed -i ":begin; /(/,/)/ { /)/! {  { N; b begin }; }; s/^start on (.*)/start on (desktop-session-start)/; };" /etc/init/smbd.conf
+sed -i "s/^start on.*/start on (desktop-session-start)/g" /etc/init/acpid.conf
+sed -i "s/^start on.*/start on (desktop-session-start)/g" /etc/init/bluetooth.conf
+sed -i "s/^start on.*/start on (desktop-session-start)/g" /etc/init/failsafe.conf
+sed -i "s/^start on.*/start on (desktop-session-start)/g" /etc/init/cron.conf
+
+exit 0

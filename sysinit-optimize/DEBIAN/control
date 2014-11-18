@@ -1,0 +1,8 @@
+Package: sysinit-optimize
+Version: 0.1
+Architecture: i386
+Maintainer: cdos-kernel-team
+Installed-Size: 2K
+Depends: network-manager (>= 0.9.8.0-0ubuntu6), avahi-daemon (>= 0.6.31-1ubuntu3), acpid (>= 1:2.0.18-1ubuntu1), libbluetooth3:i386 (>= 4.101-0ubuntu8b1), libsmbclient:i386 (>= 2:3.6.9-1ubuntu1.1) 
+Priority: optional
+Description: optimize system init scripts.

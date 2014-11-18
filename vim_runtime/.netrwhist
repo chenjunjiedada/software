@@ -1,0 +1,11 @@
+let g:netrw_dirhistmax  =10
+let g:netrw_dirhist_cnt =9
+let g:netrw_dirhist_1='/home/cjj/intel/IntelCE-27.0.12132.316788/build_i686/pcie_cefdk/cs_85x_src'
+let g:netrw_dirhist_2='/home/cjj/intel/IntelCE-27.0.12132.316788'
+let g:netrw_dirhist_3='/home/cjj/intel/IntelCE-27.0.12132.316788/build_i686'
+let g:netrw_dirhist_4='/home/cjj/intel/IntelCE-27.0.12132.316788/build_i686/trunk_cefdk'
+let g:netrw_dirhist_5='/home/cjj/intel/IntelCE-27.0.12132.316788/build_i686/trunk_cefdk/core_src'
+let g:netrw_dirhist_6='/home/cjj/intel/IntelCE-27.0.12132.316788/build_i686/trunk_cefdk/core_src/drivers'
+let g:netrw_dirhist_7='/home/cjj/intel/IntelCE-27.0.12132.316788/build_i686/trunk_cefdk/core_src/drivers/nic'
+let g:netrw_dirhist_8='/home/cjj/intel/IntelCE-0.30.12414.326915/project_build_i686/IntelCE/intel_ce_pm-0.30.12414.326911/kernel'
+let g:netrw_dirhist_9='/home/cjj/intel/IntelCE-0.30.12414.326915/build_i686/cefdk/.svn'

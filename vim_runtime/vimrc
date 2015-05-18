@@ -162,12 +162,11 @@ if has("gui_running")
   colorscheme zellner
   set gfn=monospace\ 10
 
-  set nu
+  " set nu
 else
-  set nu
-  colorscheme zellner
-  set background=dark
-  set gfn=monospace\ 14
+  " set nu
+  colorscheme desert
+ " set background=dark
   
 endif
 
@@ -444,7 +443,7 @@ autocmd BufWrite *.py :call DeleteTrailingWS()
 " Do :help cope if you are unsure what cope is. It's super useful!
 map <leader>cc :botright cope<cr>
 map <leader>n :cn<cr>
-map <leader>p :cp<cr>
+"map <leader>p :cp<cr>
 
 
 """"""""""""""""""""""""""""""
@@ -541,7 +540,7 @@ endfunction
 """"""""""""""""""""""""""""""
 try
     call fuf#defineLaunchCommand('FufCWD', 'file', 'fnamemodify(getcwd(), ''%:p:h'')')
-    map <leader>t :FufCWD **/<CR>
+    map <leader>fz :FufCWD **/<CR>
 catch
 endtry
 
@@ -698,3 +697,15 @@ endfunction
 " no comments on new line
 set fo-=r
 set shiftwidth=4
+
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => CtrlP
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+let g:ctrlp_working_path_mode = 'ra'
+map <leader>p :CtrlP<cr>
+map <leader>pd :CtrlP 
+map <leader>pb :CtrlPBuffer<cr>
+map <leader>pm :CtrlPMixed<cr>
+set wildignore+=*.so,*.o,*.a
+

@@ -166,7 +166,7 @@ if has("gui_running")
 else
   " set nu
   colorscheme desert
- " set background=dark
+  set background=dark
   
 endif
 

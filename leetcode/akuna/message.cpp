@@ -1,12 +1,9 @@
-#include <iostream>
 #include <fstream>
 #include <memory>
 #include <iostream>
 #include <string>
 #include <cstring>
 #include <exception>
-#include <cstdint>
-#include <algorithm>
 #include "message.h"
 
 template<typename type>
@@ -20,7 +17,10 @@ static int read(std::ifstream& input, char* val, size_t len)
     return input.read(val, len).gcount();
 }
 
-OrderEntryMessage::OrderEntryMessage(Header& h, std::ifstream &fs) : header(h)
+OrderEntryMessage::OrderEntryMessage(Header& h, std::ifstream &fs) :
+    header(h), 
+    price(0),
+    qty(0)
 {
     char tmp[256];
     int len = 0;
@@ -40,7 +40,7 @@ OrderEntryMessage::OrderEntryMessage(Header& h, std::ifstream &fs) : header(h)
     len += read(fs, firm_id);
 
     int firm_len = read(fs, tmp, (h.msg_len - len - 8));
-    firm = std::string(tmp, firm_len);
+    firm = std::move(std::string(tmp, firm_len));
 
     read(fs, tmp, 8);
     if (strncmp(tmp, "DBDBDBDB", 8) != 0)
@@ -48,7 +48,8 @@ OrderEntryMessage::OrderEntryMessage(Header& h, std::ifstream &fs) : header(h)
 }
 
 
-OrderAckMessage::OrderAckMessage(Header& h, std::ifstream &fs) : header(h) 
+OrderAckMessage::OrderAckMessage(Header& h, std::ifstream &fs) : 
+    header(h)
 {
     char tmp[8];
     int len = 0;
@@ -61,11 +62,17 @@ OrderAckMessage::OrderAckMessage(Header& h, std::ifstream &fs) : header(h)
     read(fs, tmp, 8);
 
     if (strncmp(tmp, "DBDBDBDB", 8) != 0)
+    {
         throw std::runtime_error("Termination string is wrong");
+    }
 }
 
 
-OrderFillMessage::OrderFillMessage(Header& h, std::ifstream &fs) : header(h)  
+OrderFillMessage::OrderFillMessage(Header& h, std::ifstream &fs) : 
+    header(h),
+    fill_price(0),
+    fill_qty(0),
+    no_of_contras(0)
 {
     char tmp[8];
     int len = 0;
@@ -75,7 +82,8 @@ OrderFillMessage::OrderFillMessage(Header& h, std::ifstream &fs) : header(h)
     read(fs, fill_qty);
     read(fs, no_of_contras);
 
-    for (int i = 0; i < no_of_contras; i++) {
+    for (int i = 0; i < no_of_contras; i++) 
+    {
         read(fs, groups[i].firm_id);
         read(fs, tmp, 3);
         groups[i].trader_tag = std::move(std::string(tmp, 3));
@@ -85,9 +93,7 @@ OrderFillMessage::OrderFillMessage(Header& h, std::ifstream &fs) : header(h)
     read(fs, tmp, 8);
     if (strncmp(tmp, "DBDBDBDB", 8) != 0)
     {
-        tmp[8] = '\0';
         throw std::runtime_error("Termination string is wrong");
-        std::cout << tmp <<std::endl;
     }
 }
 
@@ -98,9 +104,9 @@ Parser::Parser(std::string filename) :
     {
         fs. open(filename, std::ios::in | std::ios::binary);
     }
-    catch (...) 
+    catch (std::exception &e) 
     {
-        throw std::runtime_error("Failed to open data file");
+        throw std::runtime_error(e.what());
     }
 }
 
@@ -108,10 +114,11 @@ int Parser::parse_header(Header &h)
 {
     if (!fs.eof())  
     {
+        uint16_t marker = (((uint16_t)'T') << 8) + 'S';
         read(fs, h);
-        
-        if (h.marker != (((uint16_t)'T') << 8) + 'S')
-            return -1;
+
+        if (h.marker == marker) return 0;
+        return -1;
     }
 
     return -1;
@@ -119,16 +126,15 @@ int Parser::parse_header(Header &h)
 
 void Parser::operator()()
 {
-   
     while(!fs.eof())
     {
         Header h;
 
-        if (!parse_header(h) || !h.msg_len) break;
+        if (parse_header(h) || !h.msg_len) break;
 
         switch (h.msg_type)
         {
-            case ORDER_ENTRY: 
+            case Header::ORDER_ENTRY: 
                 {
                     OrderEntryMessage *oe = NULL;
 
@@ -145,8 +151,9 @@ void Parser::operator()()
 
                     order_entries.insert(std::make_pair(oe->get_client_id(), oe));
                     Trader *trader = new Trader(oe->get_trader_tag());
-                    if (traders.find(trader->tag) == traders.end())
-                        traders.insert(std::make_pair(trader->tag, trader));
+            //        if (traders.find(trader->tag) == traders.end())
+                    traders.insert(std::make_pair(trader->tag, trader));
+
 
                     if (firms.find(oe->get_firm_id()) == firms.end()) 
                     {
@@ -161,7 +168,7 @@ void Parser::operator()()
                     
                     break;
                 }
-            case ORDER_ACK:
+            case Header::ORDER_ACK:
                 {
                     OrderAckMessage *oa = NULL; 
                     
@@ -198,7 +205,7 @@ void Parser::operator()()
 
                     break;
                 }
-            case ORDER_FILL: 
+            case Header::ORDER_FILL: 
                 {
                     OrderFillMessage *of = NULL;
                     try 
@@ -242,13 +249,15 @@ void Parser::operator()()
 
 int main(int argc, char* argv[]) 
 {
-    if (argc < 2) {
+    if (argc != 2)
+    {
         std::cout << "Usage: " << std::endl;
         std::cout << argv[0] << " file_name" << std::endl;
         return -1;
     }
 
     Parser parser(argv[1]);
+
     parser();
 
     // Q1 -Q3

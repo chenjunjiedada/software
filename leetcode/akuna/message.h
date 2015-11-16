@@ -8,15 +8,16 @@
 #include <vector>
 #include <map>
 
-enum
-{
-    ORDER_ENTRY = 1, 
-    ORDER_ACK = 2,
-    ORDER_FILL = 3
-};
 
 struct Header 
 {
+    enum MSG_TYPE
+    {
+        ORDER_ENTRY = 1, 
+        ORDER_ACK = 2,
+        ORDER_FILL = 3
+    };
+
     uint16_t marker;
     uint8_t msg_type;
     uint64_t sid;
@@ -25,11 +26,22 @@ struct Header
     uint16_t msg_len;
 } __attribute__((__packed__));
 
+std::ostream& operator<<(std::ostream& os, const Header& h) {
+    os << "marker: " << h.marker << "\n"
+       << "msg_type: " << static_cast<unsigned>(h.msg_type) << "\n"
+       << "sequence_id: " << h.sid << "\n"
+       << "timestamp: " << h.timestamp << "\n"
+       << "msg_direction: " << static_cast<unsigned>(h.direction) << "\n"
+       << "msg_len: " << h.msg_len << "\n";
+    return os;
+}
+
 
 class OrderEntryMessage 
 {
     public: 
-        enum {
+        enum 
+        {
             IDC = 1,
             GFD = 2
         };
@@ -48,19 +60,19 @@ class OrderEntryMessage
         uint64_t price;
         uint32_t qty;
         std::string instrument;
-        uint8_t side; // 1: buy 2: sell
+        uint8_t side; // buy = 1, sell = 2
         uint64_t client_assigned_id;
-        uint8_t time_in_force; // 1: immediate or cancel IOC; 2: good for day GFD
+        uint8_t time_in_force; // IOC = 1, GFD = 2
         std::string trader_tag;
         uint8_t firm_id;
         std::string firm;
-        std::string termination;
 };
 
 class OrderAckMessage
 {
     public:
-        enum {
+        enum STATUS
+        {
             GOOD = 1,
             REJECT = 2
         };
@@ -77,17 +89,19 @@ class OrderAckMessage
         uint64_t client_id;
         uint8_t order_status;
         uint8_t reject_code;
-        std::string termination;
 };
 
 class OrderFillMessage
 {
     public: 
-        struct Group {
+        struct Group 
+        {
             uint8_t firm_id;
             std::string trader_tag;
             uint32_t qty;
         };
+
+        const static uint16_t max_group = 256;
 
     public:
         explicit OrderFillMessage(Header &, std::ifstream &);
@@ -102,17 +116,13 @@ class OrderFillMessage
         uint64_t fill_price;
         uint32_t fill_qty;
         uint8_t no_of_contras;
-        Group groups[256];
-        std::string termination;
+        Group groups[max_group];
 };
 
 class Trader
 {
     public:
         explicit Trader(std::string tag) :tag(tag), gfd_qty(0), fill_qty(0){};
-        uint32_t get_gfd_qty() const { return gfd_qty;};
-        uint32_t get_fill_qty() const { return fill_qty;};
-
         std::string tag;
         uint32_t gfd_qty;
         uint32_t fill_qty;
@@ -150,6 +160,5 @@ class Parser
         std::map<std::string, int> trades;
 
         std::ifstream fs;
-
 };
 

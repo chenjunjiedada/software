@@ -1,19 +1,9 @@
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Maintainer: amix the lucky stiff
 "             http://amix.dk - amix@amix.dk
-"
-" Version: 3.3 - 21/01/10 01:05:46
-"
-" Blog_post: 
-"       http://amix.dk/blog/post/19486#The-ultimate-vim-configuration-vimrc
-" Syntax_highlighted:
-"       http://amix.dk/vim/vimrc.html
-" Raw_version: 
-"       http://amix.dk/vim/vimrc.txt
-"
+
 " How_to_Install:
 "    $ mkdir ~/.vim_runtime
-"    $ svn co svn://orangoo.com/vim ~/.vim_runtime
 "    $ cat ~/.vim_runtime/install.sh
 "    $ sh ~/.vim_runtime/install.sh <system>
 "      <sytem> can be `mac`, `linux` or `windows`
@@ -66,20 +56,16 @@
 "       Find files fast (similar to TextMate's feature):
 "           info -> :help fuzzyfinder@en
 "
-"  Revisions:
-"     > 3.3: Added syntax highlighting for Mako mako.vim 
-"     > 3.2: Turned on python_highlight_all for better syntax
-"            highlighting for Python
-"     > 3.1: Added revisions ;) and bufexplorer.vim
-"
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"call vundle#rc('~/.vim_runtime/')
+"Bundle 'easymotion'
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => General
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Sets how many lines of history VIM has to remember
-set history=300
+set history=3000
 
 " Enable filetype plugin
 filetype plugin on
@@ -89,12 +75,8 @@ filetype indent on
 set autoread
 
 " With a map leader it's possible to do extra key combinations
-" like <leader>w saves the current file
 let mapleader = ","
 let g:mapleader = ","
-
-" Fast saving
-nmap <leader>w :w!<cr>
 
 " Fast editing of the .vimrc
 map <leader>e :e! ~/.vim_runtime/vimrc<cr>
@@ -106,29 +88,19 @@ autocmd! bufwritepost vimrc source ~/.vim_runtime/vimrc
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => VIM user interface
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Set 7 lines to the curors - when moving vertical..
-set so=7
-
+set so=10 " Set 10 lines to the curors - when moving vertical..
 set wildmenu "Turn on WiLd menu
-
 set ruler "Always show current position
-
 set cmdheight=2 "The commandbar height
-
 set hid "Change buffer - without saving
 
 " Set backspace config
 set backspace=eol,start,indent
 set whichwrap+=<,>,h,l
-
 set ignorecase "Ignore case when searching
-
 set hlsearch "Highlight search things
-
 set incsearch "Make search act like search in modern browsers
-
 set magic "Set magic on, for regular expressions
-
 set showmatch "Show matching bracets when text indicator is over them
 set mat=2 "How many tenths of a second to blink
 
@@ -136,7 +108,7 @@ set mat=2 "How many tenths of a second to blink
 set noerrorbells
 set novisualbell
 set t_vb=
-
+set nu
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Colors and Fonts
@@ -150,7 +122,7 @@ if MySys() == "mac"
 elseif MySys() == "windows"
   set gfn=Bitstream\ Vera\ Sans\ Mono:h10
 elseif MySys() == "linux"
-  set gfn=Monospace\ 10
+  set gfn=Monospace\ 12
   set shell=/bin/bash
 endif
 
@@ -160,11 +132,9 @@ if has("gui_running")
   set t_Co=256
   set background=dark
   colorscheme zellner
-  set gfn=monospace\ 10
-
-  " set nu
+  set gfn=monospace\ 12
 else
-  " set nu
+  set gfn=monospace\ 12
   colorscheme desert
   set background=dark
   
@@ -325,18 +295,20 @@ map <leader>bd :Bclose<cr>
 map <leader>ba :1,300 bd!<cr>
 
 " Use the arrows to something usefull
-map <right> :bn<cr>
-map <left> :bp<cr>
+"map <right> :bn<cr>
+"map <left> :bp<cr>
 
 " Tab configuration
 map <leader>tn :tabnew %<cr>
-map <leader>te :tabedit 
 map <leader>tc :tabclose<cr>
 map <leader>tm :tabmove 
+map <leader>0 :tabmove 0<cr>
+map <leader>1 :tabmove 1<cr>
+map <leader>2 :tabmove 2<cr>
+map <leader>3 :tabmove 3<cr>
 
 " When pressing <leader>cd switch to the directory of the open buffer
 map <leader>cd :cd %:p:h<cr>
-
 
 command! Bclose call <SID>BufcloseCloseIt()
 function! <SID>BufcloseCloseIt()
@@ -374,7 +346,6 @@ set laststatus=2
 
 " Format the statusline
 set statusline=\ %F%m%r%h\ %w\ \ CWD:\ %r%{CurDir()}%h\ \ \ Line:\ %l/%L:%c
-
 
 function! CurDir()
     let curdir = substitute(getcwd(), '/Users/amir/', "~/", "g")
@@ -441,16 +412,16 @@ autocmd BufWrite *.py :call DeleteTrailingWS()
 " => Cope
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Do :help cope if you are unsure what cope is. It's super useful!
-map <leader>cc :botright cope<cr>
-map <leader>n :cn<cr>
+"map <leader>cc :botright cope<cr>
+"map <leader>n :cn<cr>
 "map <leader>p :cp<cr>
 
 
 """"""""""""""""""""""""""""""
 " => bufExplorer plugin
 """"""""""""""""""""""""""""""
-let g:bufExplorerDefaultHelp=0
-let g:bufExplorerShowRelativePath=1
+"let g:bufExplorerDefaultHelp=0
+"let g:bufExplorerShowRelativePath=1
 
 
 """"""""""""""""""""""""""""""
@@ -484,7 +455,7 @@ autocmd FileType css set omnifunc=csscomplete#CompleteCSS
 map <leader>ss :setlocal spell!<cr>
 
 "Shortcuts using <leader>
-map <leader>sn ]s
+map <leader>sn ]n
 map <leader>sp [s
 map <leader>sa zg
 map <leader>s? z=
@@ -558,18 +529,15 @@ set grepprg=/bin/grep\ -nH
 " Remove the Windows ^M - when the encodings gets messed up
 noremap <Leader>m mmHmt:%s/<C-V><cr>//ge<cr>'tzt'm
 
-"Quickly open a buffer for scripbble
-map <leader>q :e ~/buffer<cr>
-
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => taglist
-" """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let Tlist_Ctags_Cmd = '/usr/bin/ctags'
 let Tlist_Show_One_File = 0
 let Tlist_Exit_OnlyWindow = 1
-let Tlist_Use_Right_Window = 1
-
+let Tlist_Use_Right_Window = 0
 map <leader>t :TlistToggle<cr> 
+
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => cscope
 " """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -708,4 +676,25 @@ map <leader>pd :CtrlP
 map <leader>pb :CtrlPBuffer<cr>
 map <leader>pm :CtrlPMixed<cr>
 set wildignore+=*.so,*.o,*.a
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => EasyMotion
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+let g:EasyMotion_smartcase = 1
+map <leader>j <plug>(easymotion-j)
+map <leader>w <plug>(easymotion-w)
+map <leader>b <plug>(easymotion-b)
+map <leader>f <plug>(easymotion-bd-f)
+nmap <leader>w <plug>(easymotion-bd-w)
+map / <plug>(easymotion-sn)
+map <leader>s <plug>(easymotion-sn)
+map n <plug>(easymotion-next)
+map N <plug>(easymotion-prev)
+
+
+"""""""""""""
+"""""""""""""
+" % jump to match brace
+" [[ jump to start of code block
+" gD go to definition of local variable
 

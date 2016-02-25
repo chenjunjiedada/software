@@ -1,0 +1,47 @@
+startup_message off
+# Caption line
+caption always "%{= R}[ %{=b b}%-w%{=rb db}%>%n %t%{-}%+w%{-b}%< %=%{R}][%{M}%D %M %d %{G}%c%{R}]"
+# Disable vbell
+vbell off
+# Disable login
+#deflogin off
+
+# Dynamic title
+
+#shelltitle '$ |bash'
+
+# Utf-8 handling
+defutf8 on
+
+# Keyboard binding
+
+#bindkey -k F1 prev
+
+#bindkey -k F2 next
+
+ 
+
+# Set xterm's title
+
+hardstatus string "screen: [%n %t]"
+
+ 
+
+# Automatically detach on hangup
+
+autodetach on
+
+ 
+
+# Make the xterm scroller work in screen
+
+#termcapinfo xterm* ti@:te@
+
+ 
+
+# Refresh the display when exiting programs
+
+altscreen on
+
+defscrollback 5000
+
